@@ -9,6 +9,8 @@ namespace NetCoreApi.Controllers
     [Route("api/[controller]")]
     public class UsuariosController : ControllerBase
     {
+        private PridesContext context = new PridesContext();
+
         [HttpGet]
         [Route("listar")]
         public dynamic listarUsuario() {
@@ -17,7 +19,7 @@ namespace NetCoreApi.Controllers
 
             if (!rToken.success) return rToken;*/
 
-            var context = new PridesContext();
+        //    var context = new PridesContext();
       
             return context.Usuarios.ToList();
         }
@@ -26,12 +28,8 @@ namespace NetCoreApi.Controllers
         [Route("listarId")]
         public dynamic listarUsuarioId(int id)
         {
-        //    var identity = HttpContext.User.Identity as ClaimsIdentity;
-        //    var rToken = Jwt.validarToken(identity);
 
-        //    if (!rToken.success) return rToken;
-
-            var context = new PridesContext();
+       //     var context = new PridesContext();
             var user = context.Usuarios.Find(id);
             return user;
 
@@ -46,7 +44,7 @@ namespace NetCoreApi.Controllers
 
             if (!rToken.success) return rToken;
 
-            var context = new PridesContext();
+        //    var context = new PridesContext();
             var user = new Usuario();
           
             user.Nombre = usuario.Nombre;
@@ -73,7 +71,7 @@ namespace NetCoreApi.Controllers
 
             if (!rToken.success) return rToken;
 
-            var context = new PridesContext();
+        //    var context = new PridesContext();
             var user = context.Usuarios.Find(id);
 
             user.Nombre = usuario.Nombre;
@@ -112,7 +110,7 @@ namespace NetCoreApi.Controllers
                 };
             } */
 
-            var context = new PridesContext();
+         //   var context = new PridesContext();
             var user = context.Usuarios.Find(id);
             context.Remove(user);
             context.SaveChanges();

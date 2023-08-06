@@ -15,9 +15,12 @@ namespace NetCoreApi.Controllers
     public class LoginController : ControllerBase
     {
         public IConfiguration _configuration;
+        private PridesContext context;
+
         public LoginController(IConfiguration configuration)
         {
             _configuration = configuration;
+            context = new PridesContext();
         }
 
         [HttpPost]
@@ -25,7 +28,7 @@ namespace NetCoreApi.Controllers
         public dynamic IniciarSesion([FromBody] Object optData)
         {
             var data = JsonConvert.DeserializeObject<dynamic>(optData.ToString());
-            var context = new PridesContext();
+      //      var context = new PridesContext();
 
             string user = data.nombre.ToString();
             string password = data.clave.ToString();
@@ -38,7 +41,8 @@ namespace NetCoreApi.Controllers
                     success = false,
                     message = "Credenciales Incorrectas",
                     status = 400,
-                    result = ""
+                    result = "",
+                    rolId = 0
                 };
             }
 
@@ -62,35 +66,36 @@ namespace NetCoreApi.Controllers
                 signingCredentials: singIn
                 );
 
-            var context2 = new PridesContext();
+        //    var context2 = new PridesContext();
             var sesion = new Sesione();
             Random rnd = new Random();
 
             var num = rnd.Next(3, 5000 + 1);
 
-            var sesionId = context2.Sesiones.Where(x => x.IdSesion == num).FirstOrDefault();
+            var sesionId = context.Sesiones.Where(x => x.IdSesion == num).FirstOrDefault();
             if (sesionId == null)
             {
                 sesion.IdSesion = num;
             }
             else {
                  num = rnd.Next(3, 5000 + 1);
-                 sesionId = context2.Sesiones.Where(x => x.IdSesion == num).FirstOrDefault();
+                 sesionId = context.Sesiones.Where(x => x.IdSesion == num).FirstOrDefault();
                  sesion.IdSesion = num;
             }
                 
             sesion.IdUsuario = usuario.IdUsuario;
         //    sesion.Token = new JwtSecurityTokenHandler().WriteToken(token);
             sesion.FechaInicio = DateTime.UtcNow;
-            context2.Sesiones.Add(sesion);
-            context2.SaveChanges();
+            context.Sesiones.Add(sesion);
+            context.SaveChanges();
 
             return new
             {
                 success = true,
                 message = "Autentico",
                 status = 200,
-                result = new JwtSecurityTokenHandler().WriteToken(token)
+                result = new JwtSecurityTokenHandler().WriteToken(token),
+                rolId = usuario.IdRol.Value
             };
         }
 
